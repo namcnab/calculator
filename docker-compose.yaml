@@ -1,0 +1,18 @@
+services:
+  coding-challenge-service:
+    image: calculator-api
+    container_name: calculator
+    volumes:
+      - log-server:/app/logs
+    networks:
+      - efk-network
+    ports:
+      - "8080:8080"
+
+volumes:
+  log-server:
+    name: log-server
+
+networks:
+  efk-network:
+    driver: bridge
