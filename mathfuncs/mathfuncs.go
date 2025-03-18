@@ -45,7 +45,6 @@ func AddList[T []int | []float32 | []float64](numbers T) any {
 
 	default:
 		sum = 0
-		return "Unsupported type"
 	}
 
 	return sum
