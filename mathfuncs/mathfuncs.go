@@ -50,14 +50,3 @@ func AddList[T []int | []float32 | []float64](numbers T) any {
 
 	return sum
 }
-
-func SubtractList(numbers []int) int {
-	if len(numbers) == 0 {
-		return 0
-	}
-	result := numbers[0]
-	for _, num := range numbers[1:] {
-		result -= num
-	}
-	return result
-}
