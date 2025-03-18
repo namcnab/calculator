@@ -1,22 +1,16 @@
 package mathfuncs
 
+type TwoNums struct {
+	A float64
+	B float64
+}
+
+type ListOfNums struct {
+	List []float64
+}
+
 func AddTwo[T int | float32 | float64](a, b T) T {
 	return a + b
-}
-
-func SubtractTwo[T int | float32 | float64](a, b T) T {
-	return a - b
-}
-
-func MultiplyTwo[T int | float32 | float64](a, b T) T {
-	return a * b
-}
-
-func DivideTwo[T int | float32 | float64](a, b T) T {
-	if b == 0 {
-		return 0 // Handle division by zero
-	}
-	return a / b
 }
 
 func AddList[T []int | []float32 | []float64](numbers T) any {
@@ -48,4 +42,19 @@ func AddList[T []int | []float32 | []float64](numbers T) any {
 	}
 
 	return sum
+}
+
+func DivideTwo[T int | float32 | float64](a, b T) T {
+	if b == 0 {
+		return 0 // Handle division by zero
+	}
+	return a / b
+}
+
+func MultiplyTwo[T int | float32 | float64](a, b T) T {
+	return a * b
+}
+
+func SubtractTwo[T int | float32 | float64](a, b T) T {
+	return a - b
 }
