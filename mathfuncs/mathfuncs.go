@@ -4,15 +4,15 @@ func AddTwo[T int | float32 | float64](a, b T) T {
 	return a + b
 }
 
-func SubtractTwo(a, b int) int {
+func SubtractTwo[T int | float32 | float64](a, b T) T {
 	return a - b
 }
 
-func MultiplyTwo(a, b int) int {
+func MultiplyTwo[T int | float32 | float64](a, b T) T {
 	return a * b
 }
 
-func DivideTwo(a, b int) int {
+func DivideTwo[T int | float32 | float64](a, b T) T {
 	if b == 0 {
 		return 0 // Handle division by zero
 	}
