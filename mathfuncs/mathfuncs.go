@@ -1,6 +1,6 @@
 package mathfuncs
 
-func AddTwo(a, b int) int {
+func AddTwo[T int | float32 | float64](a, b T) T {
 	return a + b
 }
 
