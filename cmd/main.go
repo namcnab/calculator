@@ -7,6 +7,10 @@ import (
 )
 
 func main() {
+	// Initialize the logger
+	logging.InitLogger()
+
+	// Create a new Gin router
 	ginEngine := gin.Default()
 
 	// Add CORS middleware
