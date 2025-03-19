@@ -11,7 +11,7 @@ services:
 
 volumes:
   log-server:
-    name: log-server
+    external: true
 
 networks:
   efk-network:
