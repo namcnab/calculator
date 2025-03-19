@@ -1,0 +1,53 @@
+services:
+  fluentd:
+    image: fluentd-elasticsearch
+    container_name: fluentd
+    hostname: fluentd
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - log-server:/app/logs
+      - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - efk-network
+    user: root
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
+    container_name: elasticsearch
+    hostname: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false # Disable security for testing
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200/_cluster/health" ]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+    ports:
+      - "9200:9200"
+    networks:
+      - efk-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - efk-network
+
+networks:
+  efk-network:
+    driver: bridge
+
+volumes:
+  log-server:
+    name: true
