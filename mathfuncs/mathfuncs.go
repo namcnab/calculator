@@ -1,8 +1,8 @@
 package mathfuncs
 
 type TwoNums struct {
-	A float64
-	B float64
+	A float64 `json:"a" validate:"required"`
+	B float64 `json:"b" validate:"required"`
 }
 
 type ListOfNums struct {
