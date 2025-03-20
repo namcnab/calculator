@@ -7,7 +7,7 @@ start_efk_services:
 
 start_cicd:
 	docker compose -f ./configs/jenkins/docker-compose-jenkins.yaml up -d
-
+	
 build_go_app:
 	docker build --tag calculator-api .
 
