@@ -15,10 +15,10 @@ pipeline {
 
         stage('Setup Go Environment') {
             steps {
-                // Install Go and set up the environments
+                // Install Go and set up the environment
                 sh '''
                 wget https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz
-                tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
+                sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
                 export PATH=$PATH:/usr/local/go/bin
                 go version
                 '''
@@ -29,6 +29,13 @@ pipeline {
             steps {
                 // Build the Go application
                 sh 'go build -v ./...'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Run tests
+                sh 'go test -v ./...'
             }
         }
 
