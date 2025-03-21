@@ -1,7 +1,24 @@
 FROM jenkins/jenkins:lts
 
 USER root
-RUN apt-get update && apt-get install -y git wget
+
+# Install required tools and dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    tar && \
+    rm -rf /var/lib/apt/lists/*
+
+# Pre-install Go
+ENV GO_VERSION=1.20
+RUN wget https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && \
+    rm go${GO_VERSION}.linux-amd64.tar.gz
+
+# Add Go to PATH
+ENV PATH="/usr/local/go/bin:${PATH}"
+
 # Adjust permissions for /usr/local
 RUN chown -R jenkins:jenkins /usr/local
+
 USER jenkins
