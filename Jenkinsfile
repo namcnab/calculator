@@ -15,7 +15,7 @@ pipeline {
 
         stage('Setup Go Environment') {
             steps {
-                // Install Go and set up the environment
+                // Install Go and set up the environments
                 sh '''
                 wget https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz
                 tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
