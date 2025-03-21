@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        git 'Default' // Use the default Git installation configured in Jenkins
+    }
+    
     environment {
         GO_VERSION = "1.20" // Specify the Go version
     }
