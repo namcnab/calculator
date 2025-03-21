@@ -1,4 +1,4 @@
-# Calculator Application testing 1..2..3
+# Calculator Application
 
 This application performs basic mathematics. The main purpose of this project is build a CI/CD pipeline.
 
