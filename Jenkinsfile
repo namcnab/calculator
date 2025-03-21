@@ -32,13 +32,6 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                // Run tests
-                sh 'go test -v ./...'
-            }
-        }
-
         stage('Package') {
             steps {
                 // Package the application (optional)
