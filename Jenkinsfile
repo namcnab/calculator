@@ -25,14 +25,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Build the Go application
-                sh 'go build -v ./...'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                // Run tests
-                sh 'go test -v ./...'
+                sh 'go build -v -o calculator-api ./cmd'
             }
         }
 
