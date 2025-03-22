@@ -11,7 +11,7 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+       /* stage('Checkout') {
             steps {
                 // Clone the repository
                 checkout scm
@@ -54,7 +54,7 @@ pipeline {
                     '''
                 }
             }
-        }
+        }*/
 
         stage('Deploy to Kubernetes') {
             steps {
