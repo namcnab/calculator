@@ -65,9 +65,11 @@ pipeline {
         }*/
 
         stage('Apply Kubernetes files') {
+             steps {
             withKubeConfig([credentialsId: 'k8_token', serverUrl: 'https://127.0.0.1:51358']) {
             sh 'kubectl get namespaces'
             }
+             }
         }
 
         stage('Package') {
