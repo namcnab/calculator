@@ -10,6 +10,7 @@ services:
       - "50000:50000" # Port for Jenkins agents
     volumes:
       - jenkins_home:/var/jenkins_home # Persist Jenkins data
+      - /var/run/docker.sock:/var/run/docker.sock # Bind Docker socket for Docker CLI
     restart: unless-stopped
 
 volumes:
