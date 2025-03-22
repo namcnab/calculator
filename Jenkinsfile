@@ -67,7 +67,8 @@ pipeline {
         stage('Debug Kubernetes') {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    sh 'kubectl apply -f ./configs/kubernetes/calculator-api-deployment.yaml'
+                    sh 'echo "Using KUBECONFIG: $KUBECONFIG"'
+                    sh 'kubectl config view'
                 }
             }
         }
