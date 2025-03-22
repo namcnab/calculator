@@ -7,7 +7,7 @@ pipeline {
     
     environment {
         GO_VERSION = "1.20" // Specify the Go version
-        DOCKER_IMAGE = "calculator-api:latest" // Docker image name
+        DOCKER_IMAGE = "calculator-api:latest" // Docker image name defined
     }
 
     stages {
