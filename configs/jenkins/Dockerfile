@@ -25,7 +25,7 @@ RUN wget https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && \
     rm go${GO_VERSION}.linux-amd64.tar.gz
 
-# Add Go to PATHs
+# Add Go to PATH
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Adjust permissions for /usr/local
