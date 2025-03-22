@@ -67,7 +67,7 @@ pipeline {
         stage('Apply Kubernetes') {
              steps {
             withKubeConfig([credentialsId: 'k8_token', serverUrl: 'https://host.docker.internal:51358']) {
-            sh 'kubectl get namespaces'
+            sh 'kubectl apply -f ./configs/kubernetes/namespace.yaml'
             }
              }
         }
