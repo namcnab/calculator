@@ -67,8 +67,8 @@ pipeline {
         stage('Debug Kubernetes') {
             steps {
                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    sh 'echo "Using KUBECONFIG: $KUBECONFIG"'
-                    //sh 'cat $KUBECONFIG'
+                    //sh 'echo "Using KUBECONFIG: $KUBECONFIG"'
+                    sh 'cat $KUBECONFIG'
                 }
             }
         }
