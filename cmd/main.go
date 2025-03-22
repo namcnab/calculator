@@ -29,8 +29,8 @@ func main() {
 	ginEngine.POST("/multiplytwo", MultiplyTwoHandler)
 	ginEngine.POST("/subtracttwo", SubtractTwoHandler)
 
-	// Start the server on port 8080
-	ginEngine.Run(":8080")
+	// Start the server on port 3333
+	ginEngine.Run(":3333")
 }
 
 func AddTwoHandler(c *gin.Context) {
