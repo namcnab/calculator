@@ -11,6 +11,8 @@ services:
     volumes:
       - jenkins_home:/var/jenkins_home # Persist Jenkins data
       - /var/run/docker.sock:/var/run/docker.sock # Bind Docker socket for Docker CLI
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Map host.docker.internal to the host gateway      curl -k https://host.docker.internal:51358
     restart: unless-stopped
 
 volumes:
