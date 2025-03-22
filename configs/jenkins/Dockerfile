@@ -30,6 +30,3 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Adjust permissions for /usr/local
 RUN chown -R jenkins:jenkins /usr/local
-
-# Change permissions of the Docker socket at runtime
-CMD ["sh", "-c", "chmod 666 /var/run/docker.sock && /usr/bin/tini -- /usr/local/bin/jenkins.sh"]
