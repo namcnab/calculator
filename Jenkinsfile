@@ -55,7 +55,7 @@ pipeline {
                 }
             }
         }
-
+/*
         stage('Deploy') {
             steps {
                 // Deploy the application (e.g., using Kubernetes or SSH)
@@ -65,6 +65,7 @@ pipeline {
                 '''
             }
         }
+*/
 
         stage('Package') {
             steps {
