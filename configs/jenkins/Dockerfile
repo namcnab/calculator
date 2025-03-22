@@ -31,11 +31,5 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 # Adjust permissions for /usr/local
 RUN chown -R jenkins:jenkins /usr/local
 
-# Add Jenkins user to the existing docker group or create it if it doesn't exist
-RUN if ! getent group docker; then groupadd docker; fi && \
-    usermod -aG docker jenkins
-
-# Ensure the Jenkins user has access to the Docker socket
-RUN chmod 666 /var/run/docker.sock || true
-
-USER jenkins
+# Change permissions of the Docker socket at runtime
+CMD ["sh", "-c", "chmod 666 /var/run/docker.sock && /usr/bin/tini -- /usr/local/bin/jenkins.sh"]
