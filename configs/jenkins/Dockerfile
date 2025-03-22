@@ -6,7 +6,16 @@ USER root
 RUN apt-get update && apt-get install -y \
     git \
     wget \
-    tar && \
+    tar \
+    curl \
+    gnupg2 \
+    lsb-release && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Docker CLI
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list && \
+    apt-get update && apt-get install -y docker-ce-cli && \
     rm -rf /var/lib/apt/lists/*
 
 # Pre-install Go
@@ -15,10 +24,16 @@ RUN wget https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && \
     rm go${GO_VERSION}.linux-amd64.tar.gz
 
-# Add Go to PATH
-ENV PATH="/usr/local/go/bin:${PATH}"
-
 # Adjust permissions for /usr/local
 RUN chown -R jenkins:jenkins /usr/local
+
+# Create the docker group
+RUN groupadd docker 
+
+# Add jenkins user to docker group
+RUN gpasswd -a jenkins docker
+
+# Add Go to PATH
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 USER jenkins
