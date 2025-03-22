@@ -1,39 +1,5 @@
 pipeline {
-    agent {
-        kubernetes {
-            inheritFrom 'k8s-agent-template' // Use a predefined pod template
-            defaultContainer 'jnlp'
-            yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    app: jenkins-agent
-spec:
-  containers:
-    - name: jnlp
-      image: jenkins/inbound-agent:latest
-      args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-    - name: docker
-      image: docker:20.10.24
-      command:
-        - cat
-      tty: true
-      volumeMounts:
-        - name: docker-sock
-          mountPath: /var/run/docker.sock
-    - name: kubectl
-      image: bitnami/kubectl:latest
-      command:
-        - cat
-      tty: true
-  volumes:
-    - name: docker-sock
-      hostPath:
-        path: /var/run/docker.sock
-"""
-        }
-    }
+   agent any
 
     tools {
         git 'Default' // Use the default Git installation configured in Jenkins
