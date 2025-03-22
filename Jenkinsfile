@@ -69,6 +69,12 @@ pipeline {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                     sh 'echo "Using KUBECONFIG: $KUBECONFIG"'
                     sh 'kubectl config view'
+                    sh  'kubectl get pods'
+                    sh  'kubectl get services'
+                    sh  'kubectl get deployments'
+                    sh  'kubectl get nodes'
+                    sh  'kubectl get namespaces'
+                    sh  'kubectl get configmaps'
                 }
             }
         }
