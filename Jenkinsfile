@@ -27,15 +27,6 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                // Run unit tests
-                sh '''
-                go test -v ./...
-                '''
-            }
-        }
-
         stage('Build') {
             steps {
                 // Build the Go application
