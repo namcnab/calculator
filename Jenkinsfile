@@ -66,14 +66,9 @@ pipeline {
 
         stage('Debug Kubernetes') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    sh '''
-                    echo "Using KUBECONFIG: $KUBECONFIG"
-                    kubectl config view || echo "Failed to view config"
-                    kubectl get pods || echo "Failed to get pods"
-                    kubectl get services || echo "Failed to get services"
-                    kubectl get deployments || echo "Failed to get deployments"
-                    '''
+               withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh 'echo "Using KUBECONFIG: $KUBECONFIG"'
+                    sh 'cat $KUBECONFIG'
                 }
             }
         }
