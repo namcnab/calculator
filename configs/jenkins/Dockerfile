@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 # Install Docker
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
     echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list && \
-    apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io && \
+    apt-get update && apt-get install -y docker-ce-cli && \
     rm -rf /var/lib/apt/lists/*
 
 # Pre-install Go
@@ -30,5 +30,8 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Adjust permissions for /usr/local
 RUN chown -R jenkins:jenkins /usr/local
+
+# Create the docker group if it doesn't already exist, and add Jenkins user to it
+RUN if ! getent group docker; then groupadd docker; fi && usermod -aG docker jenkins
 
 USER jenkins
