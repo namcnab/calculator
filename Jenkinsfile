@@ -68,6 +68,11 @@ pipeline {
              steps {
             withKubeConfig([credentialsId: 'k8_token', serverUrl: 'https://host.docker.internal:51358']) {
             sh 'kubectl apply -f ./configs/kubernetes/namespace.yaml'
+            sh 'kubectl apply -f ./configs/kubernetes/clusterrole.yaml'
+            sh 'kubectl apply -f ./configs/kubernetes/clusterrolebinding.yaml'
+            sh 'kubectl apply -f ./configs/kubernetes/jenkins-token.yaml'
+            sh 'kubectl apply -f ./configs/kubernetes/calculator-api-deployment.yaml'
+            sh 'kubectl apply -f ./configs/kubernetes/calculator-api-service.yaml'
             }
              }
         }
