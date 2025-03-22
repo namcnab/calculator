@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calculator-api-deployment
+  namespace: calculator-namespace # Specify the namespace here
+  labels:
+    app: calculator-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: calculator-api
+  template:
+    metadata:
+      labels:
+        app: calculator-api
+    spec:
+      containers:
+        - name: calculator-api
+          image: namcnab/calculator-api:latest # Replace with your actual image
+          ports:
+            - containerPort: 3333 # Replace with your application's port
+          env:
+            - name: ENVIRONMENT
+              value: "production" # Example environment variable
