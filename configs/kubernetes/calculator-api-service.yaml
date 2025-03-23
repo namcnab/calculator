@@ -8,6 +8,6 @@ spec:
     app: calculator-api
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 3333
-  type: ClusterIP
+      port: 3001 # External port
+      targetPort: 3333 # Port exposed by the container
+  type: LoadBalancer # Use LoadBalancer for external access
