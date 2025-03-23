@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: calculator-api
-          image: namcnab/calculator-api:latest # Replace with your actual image
+          image: namcnab/calculator-api:latest # Image hosted on Dockerhub
           ports:
             - containerPort: 3333 # Replace with your application's port
           env:
