@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../docker-compose-efk.yaml
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: fluentd
+  name: fluentd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: fluentd
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f ../docker-compose-efk.yaml
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: fluentd
+    spec:
+      containers:
+        - image: fluentd
+          name: fluentd
+          ports:
+            - containerPort: 24224
+              protocol: TCP
+            - containerPort: 24224
+              protocol: UDP
+          volumeMounts:
+            - mountPath: /app/logs
+              name: log-server
+            - mountPath: /fluentd/etc/fluent.conf
+              name: fluentd-cm1
+              subPath: fluent.conf
+      hostname: fluentd
+      restartPolicy: Always
+      volumes:
+        - name: log-server
+          persistentVolumeClaim:
+            claimName: log-server
+        - configMap:
+            items:
+              - key: fluent.conf
+                path: fluent.conf
+            name: fluentd-cm1
+          name: fluentd-cm1
