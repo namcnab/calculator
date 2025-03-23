@@ -11,7 +11,7 @@ pipeline {
     }
 
     stages {
-       /* stage('Checkout') {
+       stage('Checkout') {
             steps {
                 // Clone the repository
                 checkout scm
@@ -57,23 +57,15 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-            steps {
-                // Deploy the Docker image to a Kubernetes cluster 
-                
-               
-            }
-        }*/
-
-        stage('Apply Kubernetes') {
              steps {
-            withKubeConfig([credentialsId: 'k8_token', serverUrl: 'https://host.docker.internal:51358']) {
-            sh 'kubectl apply -f ./configs/kubernetes/namespace.yaml'
-            sh 'kubectl apply -f ./configs/kubernetes/clusterrole.yaml'
-            sh 'kubectl apply -f ./configs/kubernetes/clusterrolebinding.yaml'
-            sh 'kubectl apply -f ./configs/kubernetes/jenkins-token.yaml'
-            sh 'kubectl apply -f ./configs/kubernetes/calculator-api-deployment.yaml'
-            sh 'kubectl apply -f ./configs/kubernetes/calculator-api-service.yaml'
-            }
+                withKubeConfig([credentialsId: 'k8_token', serverUrl: 'https://host.docker.internal:51358']) {
+                    sh 'kubectl apply -f ./configs/kubernetes/namespace.yaml'
+                    sh 'kubectl apply -f ./configs/kubernetes/clusterrole.yaml'
+                    sh 'kubectl apply -f ./configs/kubernetes/clusterrolebinding.yaml'
+                    sh 'kubectl apply -f ./configs/kubernetes/jenkins-token.yaml'
+                    sh 'kubectl apply -f ./configs/kubernetes/calculator-api-deployment.yaml'
+                    sh 'kubectl apply -f ./configs/kubernetes/calculator-api-service.yaml'
+                }
              }
         }
 
