@@ -5,7 +5,8 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["namespaces"]
-    verbs: ["list"]
+    verbs: ["list", "get"] # Added "get" verb
+rules:
   - apiGroups: ["rbac.authorization.k8s.io"]
     resources: ["clusterroles"]
-    verbs: ["list"]
+    verbs: ["list", "get"] # Added "get" verb
