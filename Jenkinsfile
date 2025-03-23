@@ -60,9 +60,9 @@ pipeline {
              steps {
                 withKubeConfig([credentialsId: 'k8_token', serverUrl: 'https://host.docker.internal:51358']) {
                     // Remove existing deployment and service
-                    sh 'kubectl delete deployment calculator-api --ignore-not-found=true'
-                    sh 'kubectl delete service calculator-api --ignore-not-found=true'
-                    
+                    sh 'kubectl delete deployment calculator-api-deployment --ignore-not-found=true'
+                    sh 'kubectl delete service calculator-api-service --ignore-not-found=true'
+
                     sh 'kubectl apply -f ./configs/kubernetes/namespace.yaml'
                     sh 'kubectl apply -f ./configs/kubernetes/clusterrole.yaml'
                     sh 'kubectl apply -f ./configs/kubernetes/clusterrolebinding.yaml'
