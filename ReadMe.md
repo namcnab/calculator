@@ -6,7 +6,7 @@ This application performs basic mathematics. The main purpose of this project is
 
 - **Source Control**: Github
 - **Continuous Integration (CI) Server**: Jenkins
-- **Artifact Repository**: JFrog
+- **Artifact Repository**: Dockerhub
 - **Deployment Automation**: Kubernetes
 - **Security**: SonarQube
 - **Configuration Management**: Helm
@@ -29,7 +29,7 @@ This application performs basic mathematics. The main purpose of this project is
 - Orchestrates the entire CI/CD pipeline workflow
 - Provides visibility into build and deployment statuse
 
-### JFrog
+### Dockerhub
 
 - Stores and manages build artifacts and dependencies
 - Provides version control for binaries and packages
