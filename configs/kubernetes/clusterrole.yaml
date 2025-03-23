@@ -1,12 +1,11 @@
-# filepath: /Users/nausicaa/Documents/Repos/calculator/configs/kubernetes/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: jenkins-clusterrole
+  name: jenkins-namespace-reader
 rules:
   - apiGroups: [""]
     resources: ["namespaces"]
-    verbs: ["get", "list", "watch"]
+    verbs: ["list"]
   - apiGroups: ["rbac.authorization.k8s.io"]
     resources: ["clusterroles"]
-    verbs: ["get", "list", "watch"]
+    verbs: ["list"]
