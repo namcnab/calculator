@@ -10,8 +10,8 @@ services:
       - "3333:3333"
 
 volumes:
-  log-server:
-    external: true
+  log-server: 
+    name: log-server
 
 networks:
   efk-network:
