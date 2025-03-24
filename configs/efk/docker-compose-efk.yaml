@@ -1,6 +1,8 @@
 services:
   fluentd:
-    image: fluentd-elasticsearch
+    build:
+      context: ./fluentd/
+      dockerfile: Dockerfile
     container_name: fluentd
     hostname: fluentd
     ports:
@@ -14,7 +16,6 @@ services:
         condition: service_healthy
     networks:
       - efk-network
-    user: root
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
@@ -49,5 +50,5 @@ networks:
     driver: bridge
 
 volumes:
-  log-server:
-    name: true
+  log-server: 
+    name: log-server
