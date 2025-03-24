@@ -1,0 +1,15 @@
+services:
+  rancher:
+    image: rancher/rancher:latest
+    container_name: rancher
+    restart: unless-stopped
+    ports:
+      - "80:80"   # HTTP port
+      - "443:443" # HTTPS port
+    volumes:
+      - rancher-data:/var/lib/rancher
+    environment:
+      - CATTLE_BOOTSTRAP_PASSWORD=admin # Set the initial admin password (change this for production)
+
+volumes:
+  rancher-data:
