@@ -1,0 +1,58 @@
+elasticsearch:
+  image:
+    repository: docker.elastic.co/elasticsearch/elasticsearch
+    tag: 7.13.1
+    pullPolicy: IfNotPresent
+  containerName: elasticsearch
+  hostname: elasticsearch
+  environment:
+    - name: discovery.type
+      value: single-node
+    - name: xpack.security.enabled
+      value: "false" # Disable security for testing
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+    interval: 10s
+    retries: 5
+    timeout: 5s
+  ports:
+    - name: http
+      containerPort: 9200
+      protocol: TCP
+
+kibana:
+  image:
+    repository: docker.elastic.co/kibana/kibana
+    tag: 7.13.1
+    pullPolicy: IfNotPresent
+  containerName: kibana
+  ports:
+    - name: http
+      containerPort: 5601
+      protocol: TCP
+  dependsOn:
+    - elasticsearch
+
+fluentd:
+  image:
+    repository: fluentd-elasticsearch
+    tag: latest
+    pullPolicy: IfNotPresent
+  buildContext: ./configs/efk/fluentd
+containerName: fluentd
+hostname: fluentd
+ports:
+  - name: tcp
+    containerPort: 24224
+    protocol: TCP
+  - name: udp
+    containerPort: 24224
+    protocol: UDP
+volumes:
+  - name: log-server
+    mountPath: /app/logs
+  - name: fluentd-config
+    mountPath: /fluentd/etc
+    subPath: fluent.conf
+dependsOn:
+  - elasticsearch
