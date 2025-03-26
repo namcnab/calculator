@@ -8,8 +8,21 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: wget
+    {{- range $serviceName, $service := .Values }}
+    {{- if $service.image }}
+    - name: "{{ $serviceName }}-test"
       image: busybox
-      command: ['wget']
-      args: ['{{ include "efk-stack.fullname" . }}:{{ .Values.service.port }}']
+      command:
+        - wget
+      args:
+        - >
+          {{ $serviceName }}:{{- if $service.service.port -}}
+          {{ $service.service.port }}
+          {{- else if $service.service.ports -}}
+          {{ (index $service.service.ports 0).containerPort }}
+          {{- else -}}
+          80
+          {{- end }}
+    {{- end }}
+    {{- end }}
   restartPolicy: Never

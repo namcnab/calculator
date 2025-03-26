@@ -6,7 +6,7 @@ metadata:
     {{- include "efk-stack.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicaCount | default 1 }}
   {{- end }}
   selector:
     matchLabels:
@@ -19,9 +19,6 @@ spec:
       {{- end }}
       labels:
         {{- include "efk-stack.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -33,33 +30,39 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
-          {{- with .Values.securityContext }}
-          securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- range $serviceName, $service := .Values }}
+        {{- if $service.image }}
+        - name: "{{ $serviceName }}"
+          image: "{{ $service.image.repository }}:{{ $service.image.tag | default "latest" }}"
+          imagePullPolicy: {{ $service.image.pullPolicy | default "IfNotPresent" }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
+            {{- if $service.service.port }}
+            - containerPort: {{ $service.service.port }}
               protocol: TCP
-          {{- with .Values.livenessProbe }}
+            {{- else if $service.service.ports }}
+            {{- range $port := $service.service.ports }}
+            - containerPort: {{ $port.containerPort }}
+              protocol: {{ $port.protocol }}
+            {{- end }}
+            {{- end }}
+          {{- with $service.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.readinessProbe }}
+          {{- with $service.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.resources }}
+          {{- with $service.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.volumeMounts }}
+          {{- with $service.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- end }}
+        {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
