@@ -3,8 +3,9 @@ elasticsearch:
     repository: docker.elastic.co/elasticsearch/elasticsearch
     tag: 7.13.1
     pullPolicy: IfNotPresent
-  containerName: elasticsearch
-  hostname: elasticsearch
+  service:
+    type: ClusterIP
+    port: 9200
   environment:
     - name: discovery.type
       value: single-node
@@ -25,13 +26,9 @@ kibana:
     repository: docker.elastic.co/kibana/kibana
     tag: 7.13.1
     pullPolicy: IfNotPresent
-  containerName: kibana
-  ports:
-    - name: http
-      containerPort: 5601
-      protocol: TCP
-  dependsOn:
-    - elasticsearch
+  service:
+    type: ClusterIP
+    port: 5601
 
 fluentd:
   image:
