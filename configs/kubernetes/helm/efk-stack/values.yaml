@@ -16,10 +16,6 @@ elasticsearch:
     interval: 10s
     retries: 5
     timeout: 5s
-  ports:
-    - name: http
-      containerPort: 9200
-      protocol: TCP
 
 kibana:
   image:
@@ -32,24 +28,36 @@ kibana:
 
 fluentd:
   image:
-    repository: fluentd-elasticsearch
+    repository: namcnab/fluentd-elasticsearch
     tag: latest
     pullPolicy: IfNotPresent
-  buildContext: ./configs/efk/fluentd
-containerName: fluentd
-hostname: fluentd
-ports:
-  - name: tcp
-    containerPort: 24224
-    protocol: TCP
-  - name: udp
-    containerPort: 24224
-    protocol: UDP
-volumes:
-  - name: log-server
-    mountPath: /app/logs
-  - name: fluentd-config
-    mountPath: /fluentd/etc
-    subPath: fluent.conf
-dependsOn:
-  - elasticsearch
+  service:
+    type: ClusterIP
+    ports:
+      - name: tcp
+        containerPort: 24224
+        protocol: TCP
+      - name: udp
+        containerPort: 24224
+        protocol: UDP
+  volumes:
+    - name: log-server
+      mountPath: /app/logs
+    - name: fluentd-config
+      mountPath: /fluentd/etc
+      subPath: fluent.conf
+
+serviceAccount:
+  create: true
+
+service:
+  annotations: {}
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 75
