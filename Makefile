@@ -73,7 +73,11 @@ revert_kubernetes_env:
 	kubectl delete -f ./configs/kubernetes/namespace.yaml
 
 deploy_efk_stack:
-	kubectl apply -f ./configs/efk/k8s/
+	helm install efk-stack ./configs/kubernetes/helm/efk-stack \
+    --namespace observability \
+	--create-namespace \
+    --set service.port=9200 \
+	
 
 revert_efk_kubernetes:
 	kubectl delete -f ./configs/efk/k8s/
