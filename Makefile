@@ -14,8 +14,41 @@ start_kubernetes:
 	minikube start
 
 start_rancher:
-	docker compose -f ./configs/kubernetes/rancher/docker-compose-rancher.yaml down
-	docker compose -f ./configs/kubernetes/rancher/docker-compose-rancher.yaml up -d
+	helm repo list | grep -q "rancher-stable" || helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+	kubectl get namespace cattle-system >/dev/null 2>&1 || kubectl create namespace cattle-system
+	helm repo list | grep -q "jetstack" || helm repo add jetstack https://charts.jetstack.io
+	helm repo update
+	helm list -n cert-manager | grep -q "cert-manager" \
+        || helm install cert-manager jetstack/cert-manager \
+            --namespace cert-manager \
+            --create-namespace \
+            --set installCRDs=true
+	[ -d rancher ] && rm -rf rancher || true
+	helm pull rancher-stable/rancher --untar
+	sed -i '' 's/kubeVersion: < 1.32.0-0/kubeVersion: \">=1.20.0 <1.33.0\"/' ./rancher/Chart.yaml
+	helm list -n cattle-system | grep -q "rancher" \
+        && echo "Rancher is already installed. Skipping installation." \
+        || (helm install rancher ./rancher \
+            --namespace cattle-system \
+            --set hostname=rancher.my.org \
+            --set bootstrapPassword=admin \
+			--set cleanup.finalizers=false)
+	kubectl -n cattle-system rollout status deploy/rancher --timeout=10m
+	kubectl get svc -n cattle-system | grep -q "rancher-lb" \
+        || kubectl expose deployment rancher --name=rancher-lb --port=443 --type=LoadBalancer -n cattle-system
+	kubectl get svc -n cattle-system
+	nohup kubectl port-forward service/rancher-lb 9443:443 -n cattle-system > port-forward.log 2>&1 &
+	rm -rf rancher
+
+stop_rancher:
+	kubectl delete deployment rancher -n cattle-system || true
+	
+	kubectl delete namespace cattle-system || true
+
+restart_rancher_lb:
+	kubectl delete svc rancher-lb -n cattle-system || true
+	kubectl expose deployment rancher --name=rancher-lb --port=443 --type=LoadBalancer -n cattle-system
+	nohup kubectl port-forward service/rancher-lb 9443:443 -n cattle-system > port-forward.log 2>&1 &
 
 start_sonarqube:
 	docker compose -f ./configs/sonarqube/docker-compose-sonarqube.yaml down
