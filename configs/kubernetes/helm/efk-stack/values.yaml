@@ -32,8 +32,9 @@ kibana:
     tag: 7.13.1
     pullPolicy: IfNotPresent
   service:
-    type: ClusterIP
-    port: 5601
+    type: LoadBalancer
+    port: 3334
+    targetPort: 5601
 
 fluentd:
   image:
