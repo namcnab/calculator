@@ -7,7 +7,8 @@ pipeline {
     
     environment {
         GO_VERSION = "1.20" // Specify the Go version
-        DOCKER_IMAGE = "calculator-api:latest" // Docker image name defined
+        CALCULATOR_DOCKER_IMAGE = "calculator-api:latest" // Docker image name defined
+        FLUENTD_DOCKER_IMAGE = "fluentd-elasticsearch:latest"
     }
 
     stages {
@@ -27,51 +28,55 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Go App') {
             steps {
-                // Build the Go application
-                sh 'go build -v -o calculator-api ./cmd'
+                sh 'make build_go'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker Images') {
             steps {
-                // Build a Docker image for the application
-                sh '''
-                docker build -t $DOCKER_IMAGE .
-                '''
+                sh 'make build_docker_images'
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push Docker Images') {
             steps {
                 // Push the Docker image to a registry (e.g., Docker Hub)
                 withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
                     echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                    docker tag $DOCKER_IMAGE namcnab/$DOCKER_IMAGE
-                    docker push namcnab/$DOCKER_IMAGE
+                    docker tag $CALCULATOR_DOCKER_IMAGE namcnab/$CALCULATOR_DOCKER_IMAGE
+                    docker push namcnab/$CALCULATOR_DOCKER_IMAGE
                     '''
                 }
             }
         }
 
-        stage('Deploy to Kubernetes') {
-             steps {
+        stage('Setup Kubernetes Environment'){
+            steps {
                 withKubeConfig([credentialsId: 'k8_token', serverUrl: 'https://host.docker.internal:51358']) {
-                    // Remove existing deployment and service
-                    sh 'kubectl delete deployment calculator-api-deployment --ignore-not-found=true'
-                    sh 'kubectl delete service calculator-api-service --ignore-not-found=true'
+                    sh 'make setup_kubernetes_env'  
+                }
+            }
+        }
 
-                    sh 'kubectl apply -f ./configs/kubernetes/namespace.yaml'
-                    sh 'kubectl apply -f ./configs/kubernetes/clusterrole.yaml'
-                    sh 'kubectl apply -f ./configs/kubernetes/clusterrolebinding.yaml'
-                    sh 'kubectl apply -f ./configs/kubernetes/jenkins-token.yaml'
-                    sh 'kubectl apply -f ./configs/kubernetes/calculator-api-deployment.yaml'
-                    sh 'kubectl apply -f ./configs/kubernetes/calculator-api-service.yaml'
+         stage('Deploys EFK Stack to Kubernetes') {
+             steps {
+                withKubeConfig([credentialsId: 'k8_token', serverUrl: 'https://host.docker.internal:51358']) {        
+                   sh 'make deploy_efk_stack'
                 }
              }
         }
+
+        stage('Deploys Calculator API to Kubernetes') {
+             steps {
+                withKubeConfig([credentialsId: 'k8_token', serverUrl: 'https://host.docker.internal:51358']) {
+                   sh 'make deploy_calc_api'
+                }
+             }
+        }
+        
 
         stage('Package') {
             steps {
