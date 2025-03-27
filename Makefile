@@ -80,8 +80,9 @@ deploy_efk_stack:
 	
 
 revert_efk_kubernetes:
-	kubectl delete -f ./configs/efk/k8s/
-
+	helm uninstall efk-stack -n observability
+	kubectl delete namespace observability
+	
 deploy_calc_api:                    
 	kubectl apply -f ./configs/kubernetes/calculator-api-deployment.yaml
 	kubectl apply -f ./configs/kubersnetes/calculator-api-service.yaml
