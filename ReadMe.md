@@ -48,6 +48,7 @@ Docker Hub Repo: namcnab/calculator-api
 
 Kubernetes Endpoint: https://host.docker.internal:51358
 Rancher Endpoint: https://localhost:8443/
+LoadBalancer IP Range: 192.168.1.100 - 192.168.1.200
 
 - **Helm**: Consumes charts for application deployment
 - **Prometheus**: Exposes metrics endpoints for monitoring
