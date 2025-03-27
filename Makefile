@@ -79,7 +79,7 @@ deploy_efk_stack:
     --set service.port=9200 \
 	
 
-revert_efk_kubernetes:
+revert_efk_stack:
 	helm uninstall efk-stack -n observability
 	kubectl delete namespace observability
 	
