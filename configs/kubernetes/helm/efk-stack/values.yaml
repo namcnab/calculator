@@ -11,11 +11,20 @@ elasticsearch:
       value: single-node
     - name: xpack.security.enabled
       value: "false" # Disable security for testing
+    - name: ES_JAVA_OPTS
+      value: "-Xms2g -Xmx2g" # Set heap size to 2GB
   healthcheck:
     test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
     interval: 10s
     retries: 5
     timeout: 5s
+  resources:
+    requests:
+      memory: "4Gi" # Reduce memory request
+      cpu: "1" # Reduce CPU request
+    limits:
+      memory: "4Gi" # Reduce memory limit
+      cpu: "2" # Reduce CPU limit
 
 kibana:
   image:
@@ -61,3 +70,11 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 1
   targetCPUUtilizationPercentage: 75
+
+resources:
+  requests:
+    memory: "10Gi" # Minimum memory Elasticsearch can use
+    cpu: "2"
+  limits:
+    memory: "16Gi" # Maximum memory Elasticsearch can use
+    cpu: "4"
