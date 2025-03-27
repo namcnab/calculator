@@ -1,19 +1,34 @@
+{{- range $serviceName, $service := .Values }}
+{{- if $service.service }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "efk-stack.fullname" . }}
+  name: {{ include "efk-stack.fullname" $ }}-{{ $serviceName }}
   labels:
-    {{- include "efk-stack.labels" . | nindent 4 }}
-  annotations:
-    {{- with .Values.service.annotations }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
+    app.kubernetes.io/name: {{ $serviceName }}
+    {{- include "efk-stack.labels" $ | nindent 4 }}
 spec:
-  type: {{ .Values.service.type | default "ClusterIP" }}
+  type: {{ $service.service.type | default "ClusterIP" }}
   ports:
-    - port: {{ .Values.service.port | default 9200 }} # Default to 9200 if not set
-      targetPort: {{ .Values.service.targetPort | default .Values.service.port }}
+    {{- if $service.service.ports }}
+    {{- range $port := $service.service.ports }}
+    - name: {{ $port.name | default "http" }}
+      port: {{ $port.containerPort }}
+      {{- if eq $service.service.type "LoadBalancer" }}
+      targetPort: {{ $port.targetPort | default 5601 }}
+      {{- end }}
+      protocol: {{ $port.protocol | default "TCP" }}
+    {{- end }}
+    {{- else }}
+    - name: http
+      port: {{ $service.service.port | default 80 }}
+      {{- if eq $service.service.type "LoadBalancer" }}
+      targetPort: {{ $service.service.targetPort | default 5601 }}
+      {{- end }}
       protocol: TCP
-      name: {{ .Values.service.name | default "http" }}
+    {{- end }}
   selector:
-    {{- include "efk-stack.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ $serviceName }}
+---
+{{- end }}
+{{- end }}
