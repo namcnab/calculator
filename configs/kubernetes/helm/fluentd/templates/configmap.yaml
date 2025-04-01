@@ -1,0 +1,8 @@
+# filepath: /Users/nausicaa/Documents/Repos/calculator/configs/kubernetes/helm/fluentd/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+data:
+  fluent.conf: |
+{{ .Files.Get "configs/fluent.conf" | indent 4 }}

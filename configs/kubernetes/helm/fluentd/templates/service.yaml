@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fluentd.fullname" . }}
+  labels:
+    {{- include "fluentd.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.fluentd.service.type }}
+  ports:
+    - port: {{ .Values.fluentd.service.port }}
+      targetPort: {{ .Values.fluentd.service.port }}
+      protocol: {{ .Values.fluentd.service.protocol | default "TCP" }}
+      name: fluentd
+  selector:
+    {{- include "fluentd.selectorLabels" . | nindent 4 }}
