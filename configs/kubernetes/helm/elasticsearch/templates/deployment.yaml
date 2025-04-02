@@ -49,6 +49,13 @@ spec:
             - name: "{{ .name }}"
               value: "{{ .value }}"
             {{- end }}
+          {{- if .Values.elasticsearch.lifecycle }}
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  {{- toYaml .Values.elasticsearch.lifecycle.postStart.exec.command | nindent 16 }}
+          {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -61,11 +68,11 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.volumeMounts }}
+          {{- with .Values.elasticsearch.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
+      {{- with .Values.elasticsearch.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}

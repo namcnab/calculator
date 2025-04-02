@@ -50,39 +50,31 @@ restart_rancher_lb:
 	kubectl expose deployment rancher --name=rancher-lb --port=443 --type=LoadBalancer -n cattle-system
 	nohup kubectl port-forward service/rancher-lb 9443:443 -n cattle-system > port-forward.log 2>&1 &
 
-start_sonarqube:
-	docker compose -f ./configs/sonarqube/docker-compose-sonarqube.yaml down
-	docker compose -f ./configs/sonarqube/docker-compose-sonarqube.yaml up
+# EFK STACK TASKS
+start_efk: install_elasticsearch install_kibana install_fluentd
+	kubectl apply -f ./configs/kubernetes/env/pv.yaml
+	kubectl apply -f ./configs/kubernetes/env/pvc.yaml
 
-build_go:
-	go build -v -o calculator-api ./cmd
+install_fluentd:
+	helm upgrade --install fluentd ./configs/kubernetes/helm/fluentd \
+		--namespace observability 
+	
+install_elasticsearch:
+	kubectl get namespace observability >/dev/null 2>&1 || kubectl create namespace observability
+	helm upgrade --install elasticsearch ./configs/kubernetes/helm/elasticsearch \
+		--namespace observability
+	kubectl apply -f ./configs/kubernetes/env/temppod.yaml
+	kubectl cp ./configs/kubernetes/helm/elasticsearch/index_template.json observability/temp-pod:/mnt/index_template.json
 
-build_docker_images:
-	docker build -t $(CALCULATOR_DOCKER_IMAGE):$(DOCKER_TAG) .
-
-setup_kubernetes_env:
-	kubectl apply -f ./configs/kubernetes/namespace.yaml
-	kubectl apply -f ./configs/kubernetes/clusterrole.yaml      
-	kubectl apply -f ./configs/kubernetes/clusterrolebinding.yaml
-	kubectl apply -f ./configs/kubernetes/jenkins-token.yaml
-
-revert_kubernetes_env:
-	kubectl delete -f ./configs/kubernetes/jenkins-token.yaml
-	kubectl delete -f ./configs/kubernetes/clusterrolebinding.yaml
-	kubectl delete -f ./configs/kubernetes/clusterrole.yaml
-	kubectl delete -f ./configs/kubernetes/namespace.yaml
-
-deploy_efk_stack:
-	helm install efk-stack ./configs/kubernetes/helm/efk-stack \
-    --namespace observability \
-	--create-namespace \
-    --set service.port=9200 \
 	
 
-revert_efk_stack:
-	helm uninstall efk-stack -n observability
-	kubectl delete namespace observability
-	
+install_kibana:
+	helm upgrade --install kibana ./configs/kubernetes/helm/kibana \
+		--namespace observability
+	nohup  kubectl port-forward service/kibana 3334:3334 -n observability > kibana-port-forward.log 2>&1 & \
+		sleep 5 # Allow some time for the port-forward to establish
+
+# Calculator API Deployment and Service Tasks
 deploy_calc_api:                    
 	kubectl apply -f ./configs/kubernetes/calculator-api-deployment.yaml
 	kubectl apply -f ./configs/kubersnetes/calculator-api-service.yaml
