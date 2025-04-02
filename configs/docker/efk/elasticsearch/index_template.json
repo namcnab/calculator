@@ -1,0 +1,53 @@
+{
+  "index_patterns": ["fluentd-logs-*"],
+  "priority": 100,
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 1
+    },
+    "mappings": {
+      "dynamic": false,
+      "properties": {
+        "client_ip": {
+          "type": "text"
+        },
+        "server_ip": {
+          "type": "text"
+        },
+        "level": {
+          "type": "text"
+        },
+        "status": {
+          "type": "integer"
+        },
+        "http_method": {
+          "type": "text"
+        },
+        "message": {
+          "type": "text"
+        },
+        "sys_err_msg": {
+          "type": "text"
+        },
+        "operation_name": {
+          "type": "text"
+        },
+        "time_stamp": {
+          "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ssZ"
+        },
+        "time_zone": {
+          "type": "text"
+        },
+        "response_time": {
+          "type": "float"
+        },
+        "@timestamp": {
+          "type": "date",
+          "format": "strict_date_optional_time||epoch_millis"
+        }
+      }
+    }
+  }
+}
