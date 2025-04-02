@@ -80,5 +80,9 @@ Elasticsearch Endpoint: http://localhost:9200
 Kibana Endpoint: http://localhost:5601
 
 - **Kubernetes**: Collects pod and application logs
+  - Test Helm Charts:
+    - helm template elasticsearch ./configs/kubernetes/helm/elasticsearch --namespace observability
+    - helm template fluentd ./configs/kubernetes/helm/fluentd --namespace observability --values ./configs/kubernetes/helm/fluentd/values.yaml
+    - helm template kibana ./configs/kubernetes/helm/kibana --namespace observability
 - **Prometheus**: Correlates logs with metrics for incident analysis
 - **Jenkins**: Captures build logs and pipeline execution details
